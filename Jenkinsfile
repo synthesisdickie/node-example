@@ -7,7 +7,8 @@ pipeline {
     stage('Building image') {
       steps{
         script {
-          docker.build registry + ":latest"
+          // docker.build registry + ":latest"
+          sh "docker build -t synthesis/node-example:latest ."
         }
       }
     }
