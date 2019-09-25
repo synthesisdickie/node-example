@@ -8,7 +8,7 @@ pipeline {
       steps{
         script {
           // docker.build registry + ":latest"
-          sh "docker build -t synthesis/node-example:latest ."
+          sh "docker -v jenkins-data:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock -v "$HOME":/home build -t synthesis/node-example:latest ."
         }
       }
     }
