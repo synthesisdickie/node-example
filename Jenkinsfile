@@ -1,7 +1,8 @@
 pipeline {
   environment {
     registry = "synthesis/node-example"
-    registryCredential = ‘dockerhub’
+    registryCredential = 'dockerhub'
+    dockerImage = ''
   }
   agent any
   stages {
