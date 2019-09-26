@@ -1,24 +1,29 @@
 pipeline {
   environment {
     registry = "synthesis/node-example"
+    registryCredential = ‘dockerhub’
   }
   agent any
   stages {
     stage('Building image') {
       steps{
         script {
-          // docker.build registry + ":latest"
-          //sh "docker -v jenkins-data:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock build -t synthesis/node-example:latest ."
-          sh "docker build -t synthesis/node-example:latest ."
+          dockerImage = docker.build registry + ":$BUILD_NUMBER"
         }
       }
     }
-    stage('Push image') {
+    stage('Deploy Image') {
       steps{
         script {
-          // docker.build registry + ":latest"
-          sh "docker push synthesis/node-example:latest"
+          docker.withRegistry( '', registryCredential ) {
+            dockerImage.push()
+          }
         }
+      }
+    }
+    stage('Remove Unused docker image') {
+      steps{
+        sh "docker rmi $registry:$BUILD_NUMBER"
       }
     }
   }
