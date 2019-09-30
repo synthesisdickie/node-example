@@ -3,6 +3,7 @@ pipeline {
     registry = "synthesis/node-example"
     registryCredential = 'dockerhub'
     dockerImage = ''
+    dockerImageLatest = ''
   }
   agent any
   stages {
@@ -10,6 +11,7 @@ pipeline {
       steps{
         script {
           dockerImage = docker.build registry + ":$BUILD_NUMBER"
+          dockerImageLatest = docker.build registry + ":latest"
         }
       }
     }
@@ -18,6 +20,7 @@ pipeline {
         script {
           docker.withRegistry( '', registryCredential ) {
             dockerImage.push()
+            dockerImageLatest.push()
           }
         }
       }
@@ -25,6 +28,7 @@ pipeline {
     stage('Remove Unused docker image') {
       steps{
         sh "docker rmi $registry:$BUILD_NUMBER"
+        sh "docker rmi $registry:latest"
       }
     }
   }
